@@ -6,11 +6,9 @@ Based on https://github.com/troilus/predict
 
 ## Features
 - Specific satellite pass information calculation
-- Collecting pass information for satellites
 - Use the phone to point at the satellite
-- Multilingual
 - Add to calendar reminder
-- Freq doppler display
+- Frequency doppler display
 - SSTV decode(based on https://github.com/Equinoxis/sstv-decoder)
 
 ## Host
@@ -20,13 +18,13 @@ Based on https://github.com/troilus/predict
 cd cert;
 
 openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout localhost.key -out localhost.crt -days 365 \
-  -subj "/C=US/ST=New York/L=New York/O=SatTracker/OU=Dev/CN=localhost"
+  -subj "/C=US/ST=New York/L=New York/O=SatTracker/OU=Dev/CN=localhost";
 ```
 If using iOS, you need to send the localhost.crt to the phone, install it as a profile and allow trust as a root certificate.
 
 2. Start the HTTPS server
 ```shell
-python3 server.py <optional port>
+python3 server.py <optional port>;
 ```
 3. Visit  in browser
 4. Update TLE database
