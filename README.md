@@ -7,11 +7,11 @@ Based on https://github.com/troilus/predict
 ## Features
 - Specific satellite pass information calculation
 - Use the phone to point at the satellite
-- Add to calendar reminder
+- Add calendar reminder
 - Frequency doppler display
-- SSTV decode(based on https://github.com/Equinoxis/sstv-decoder)
+- SSTV decode
 
-## Host
+## Self Host
 
 1. Create a local SSL cert
 ```shell
@@ -26,12 +26,12 @@ If using iOS, you need to send the localhost.crt to the phone, install it as a p
 ```shell
 python3 server.py <optional port>;
 ```
-3. Visit  in browser
-4. Update TLE database
+3. Update TLE database
 
 ```shell
 sh ./update_tle.sh
 ```
+4. Visit https://localhost:\<port\> on a browser
 
 ---
 
@@ -40,7 +40,8 @@ sh ./update_tle.sh
 <img width="390" height="688" alt="image" src="./assets/482912705-b706b319-d339-415a-b782-d7df7c01c53c.png" />
 
 ## Sources
-- https://r4uab.ru/ (TLEs)
+- https://www.amsat.org (TLEs)
+- https://db.satnogs.org (Active satellites)
 - https://github.com/shashwatak/satellite-js
 - https://github.com/mourner/suncalc
 - https://github.com/Equinoxis/sstv-decoder
