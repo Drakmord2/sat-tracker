@@ -18,7 +18,6 @@
     />  
     <meta name="robots" content="index, follow" />  
     <meta name="theme-color" content="#ffffff" />  
-    <link rel="canonical" href="https://sstv-decoder.mathieurenaud.fr/" />  
   
     <meta name="msapplication-TileColor" content="#2b5797" />  
   
@@ -26,18 +25,14 @@
     <link rel="stylesheet" href="style.css" />  
     <script type="module" src="scripts/main.js"></script>  
       
-    <!-- 语言检测和国际化脚本 -->  
     <script>  
-      // 获取浏览器支持的语言列表  
       const userLanguages = navigator.languages || [navigator.language];  
         
-      // 检查是否有中文变体  
       const hasChinese = userLanguages.some(lang => lang.startsWith('zh'));  
         
-      // 定义文本内容  
       const texts = {  
         en: {  
-          title: "🚧Online SSTV Decoder by",  
+          title: "Online SSTV Decoder",  
           description: "Load an SSTV audio file to extract the transmitted image",  
           uploadTip: "Click to Upload an audio",  
           noFileSelected: "No file selected",  
@@ -57,69 +52,33 @@
             good: "🚀 Balanced – Good Quality",  
             slow: "🎯 Slow - High Quality"  
           }  
-        },  
-        zh: {  
-          title: "🚧在线 SSTV 解码器 by",  
-          description: "上传 SSTV 音频文件以提取传输的图像",  
-          uploadTip: "点击上传音频文件",  
-          noFileSelected: "未选择文件",  
-          fftQuality: "FFT 质量:",  
-          sstvMode: "SSTV 模式:",  
-          autoDetect: "🔍 自动检测",  
-          decodeButton: "解码 SSTV",  
-          downloadButton: "下载图像",  
-          feedbackText1: "为获得最佳质量，请在 Windows 上使用 RX-SSTV。",  
-          feedbackText2: "如果解码失败，请手动选择模式。",  
-          decodingFailed: "解码失败，请手动选择解码格式。"  ,
-          qualityOptions: {  
-            ultraFast: "⚡ 超快速 – 极低质量",  
-            veryFast: "⚡ 很快速 – 低质量",  
-            fast: "⚡ 快速 – 中低质量",  
-            balanced: "🚀 平衡 – 中等质量",  
-            good: "🚀 平衡 – 良好质量",  
-            slow: "🎯 慢速 - 高质量"  
-          }  
-        }  
+        }
       };  
         
-      // 选择语言  
-      const currentLang = hasChinese ? 'zh' : 'en';  
+      const currentLang = 'en';  
       const currentTexts = texts[currentLang];  
-      console.log(currentLang)
-        
-      // 页面加载完成后更新文本  
+         
       document.addEventListener('DOMContentLoaded', function() {  
-        // 更新 HTML lang 属性  
         document.documentElement.lang = currentLang;  
           
-        // 更新页面标题  
-        document.querySelector('h2').innerHTML = currentTexts.title + ' <a href="https://resume.mathieurenaud.fr/">Mathieu Renaud</a>';  
-          
-        // 更新描述文本  
         document.querySelector('main p').textContent = currentTexts.description;  
           
-        // 更新上传提示  
         document.querySelector('.tips').textContent = currentTexts.uploadTip;  
-          
-        // 更新文件名显示  
+           
         document.getElementById('audioFileNameDisplay').textContent = currentTexts.noFileSelected;  
           
-        // 更新标签  
         document.querySelector('label[for="qualitySelect"]').textContent = currentTexts.fftQuality;  
         document.querySelector('label[for="modeSelect"]').textContent = currentTexts.sstvMode;  
           
-        // 更新按钮  
         document.getElementById('decodeButton').textContent = currentTexts.decodeButton;  
         document.getElementById('downloadImageButton').textContent = currentTexts.downloadButton;  
           
-        // 更新反馈卡片  
         const feedbackPs = document.querySelectorAll('#feedbackCard p');  
         if (feedbackPs.length >= 2) {  
           feedbackPs[0].textContent = currentTexts.feedbackText1;  
           feedbackPs[1].textContent = currentTexts.feedbackText2;  
         }  
-          
-        // 更新质量选项  
+           
         const qualityOptions = document.querySelectorAll('#qualitySelect option');  
         qualityOptions[0].textContent = currentTexts.qualityOptions.ultraFast;  
         qualityOptions[1].textContent = currentTexts.qualityOptions.veryFast;  
@@ -128,7 +87,6 @@
         qualityOptions[4].textContent = currentTexts.qualityOptions.good;  
         qualityOptions[5].textContent = currentTexts.qualityOptions.slow;  
           
-        // 更新自动检测选项  
         document.querySelector('#modeSelect option[value="auto"]').textContent = currentTexts.autoDetect;  
       });  
     </script>  
@@ -137,8 +95,7 @@
   <body>  
     <main class="main-container">  
       <div class="decoder-container zone-container">  
-        <h2>🚧Online SSTV Decoder by  
-        <a href="https://resume.mathieurenaud.fr/">Mathieu Renaud</a></h2>  
+        <h2>Online SSTV Decoder</h2>  
         <p>  
           Load an SSTV audio file to extract the transmitted image  
         </p>  
@@ -198,9 +155,11 @@
             For best quality, please use RX-SSTV on windows.</p>  
             <p>If decoding fails, please manually select the mode.  
           </p>  
+          <p>
+            <a href="https://resume.mathieurenaud.fr/">Mathieu Renaud</a>
+          </p>
         </div>  
       </div>  
     </main>  
-    <script defer src="https://umami.xanyi.eu.org/script.js" data-website-id="f5178bc6-3761-4415-bcea-469f5cb097d6" data-tag="sstv"></script>  
   </body>  
 </html>

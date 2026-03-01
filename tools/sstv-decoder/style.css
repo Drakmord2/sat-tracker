@@ -7,8 +7,8 @@
 body {
   font-family: "Arial", sans-serif;
   text-align: center;
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: #1c1c1c;
+  color: #bebebe;
   margin: 0;
   padding: 20px 10px;
   display: flex;
@@ -28,7 +28,7 @@ body {
 
 h1 {
   font-size: 2rem;
-  color: #222;
+  color: #fff;
   margin-bottom: 10px;
 }
 
@@ -45,10 +45,10 @@ a:hover {
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
-  background: white;
+  background: #2f2f2f;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(154, 153, 153, 0.1);
   width: 80%;
 }
 
@@ -64,7 +64,7 @@ a:hover {
 
 h2 {
   font-size: 1.5rem;
-  color: #444;
+  color: #ababab;
 }
 
 .file-drop-zone {

@@ -22,17 +22,23 @@ def create_https_server(cert_path,key_path,port=8987):
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(cert_path, key_path)
 
-        print('Creating context...')
+        print('Creating server...')
         with socketserver.TCPServer(server_address, http.server.SimpleHTTPRequestHandler) as httpd:
+            print('Creating socket...')
             with context.wrap_socket(httpd.socket, server_side=True) as ssock:
                 httpd.socket = ssock
-                
+
                 print(f"Serving securely on https://localhost:{port}")
                 httpd.serve_forever()
     except Exception as e:
         print(e)
         exit("[ERR] Port %d has been taken."%(port))
 
-    
 if __name__ == "__main__":
-    create_https_server(CERT_PATH,KEY_PATH,args.port)
+    try:
+        create_https_server(CERT_PATH,KEY_PATH,args.port)
+    except KeyboardInterrupt:
+        print("\n- Shutting down...\n")
+    except Exception as err:
+        print("Error: ")
+        print(err)

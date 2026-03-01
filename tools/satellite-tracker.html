@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link href="/src/css/point.css" rel="stylesheet">
+
+    <title>🌎ORBIT</title>
+<body>
+    <div id="info-bar">
+        <p id="satellite-name" style="font-weight:bold;"></p>
+        <p id="satellite-info"></p>
+        <p id="pass-info"></p>
+        <p id="time-info"></p>
+    </div>
+    <div id="progress-bar-container" style="position: relative; height: 20px; background: #eee;">
+        <div id="progress-bar" style="height: 100%; background: #76c7c0; width: 0%; position: relative;">
+            <div id="elapsed-time"
+                style="position: absolute; top: -14px; right: 0; font-size: 12px;color: rgb(255, 255, 255);"></div>
+            <div id="remaining-time" style="position: absolute; bottom: -14px; right: 0; font-size: 12px;"></div>
+        </div>
+    </div>
+    <div id="canvas-container">
+        <canvas id="trajectory-canvas" width="300" height="300"></canvas>
+        <svg id="trajectory-svg" width="300" height="300"></svg>
+        <div class="compass">
+
+            <svg class="compass-background" id="compass-backgroundsvg" width="300" height="300"
+                viewBox="-150 -150 300 300">
+                <g class="tick-marks"></g>
+                <circle class="compass-circle-outer" cx="0" cy="0" r="140" fill="none" stroke="#494953"
+                    stroke-width="3" />
+
+                <circle class="compass-circle-30" cx="0" cy="0" r="93.3" fill="none" stroke="gray" stroke-width="1"
+                    stroke-dasharray="5,5" />
+                <circle class="compass-circle-60" cx="0" cy="0" r="46.6" fill="none" stroke="gray" stroke-width="1"
+                    stroke-dasharray="5,5" />
+
+                <g class="cardinal-marks">
+                    <text x="0" y="-110" text-anchor="middle" class="direction-text">N</text>
+                    <text x="0" y="120" text-anchor="middle" class="direction-text">S</text>
+                </g>
+
+                <circle class="compass-center" cx="0" cy="0" r="3" fill="#494953" />
+            </svg>
+            <div class="arrow"></div>
+        </div>
+
+        <div id="elevation-bar"
+            style="position: absolute; left: -25px; top: 0; height: 300px; width: 20px; background-color: #ddd; border: 0px solid #999; border-radius: 3px;">
+            <div id="satellite-elevation"
+                style="position: absolute; left: 1px; width: 18px; height: 18px; background-color: #e17822; border-radius: 50%;">
+            </div>
+            <div id="arrow-elevation"
+                style="position: absolute; left: 6px; width: 8px; height: 8px; background-color: #186548; border-radius: 50%;">
+            </div>
+        </div>
+        <svg id="satorbitpointsvg" width="300" height="300"></svg>
+    </div>
+
+    <p id="doppler-info"></p>
+
+    <div class="button-container">
+        <button class="info-btn" id="info-btn">Frequecy Info</button>
+
+        <div>
+            <button id="record-btn" class="record-btn">Record sound</button>
+        </div>
+        <button id="download-btn" class="download-btn" style="display: none;">Download?</button>
+        <button id="timer-btn" class="timer-btn">000</button>
+
+    </div>
+    <button class="start-btn">iOS Sensor</button>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <button id="close-btn" class="close-btn">x</button>
+            <div id="satellite-feqinfo"></div>
+        </div>
+    </div>
+</body>
+
+<script src="/src/vendor/satellite.js"></script>
+<script src="/src/js/point.js"></script>
+
+<div id="made">
+    Modded by KE2HPP</a>
+</div>
+
+</html>
