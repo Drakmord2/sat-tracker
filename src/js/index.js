@@ -18,7 +18,7 @@ const translations = {
         chatonline: "Online Chat",
         closeonline: "Close Chat",
         sstveventsinfo: "ongoing SSTV events",
-        howToUseUrl: "https://github.com/troilus/predict/blob/main/HowToUse.md",
+        howToUseUrl: "https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md",
         tableHeaders: {
             date: "Date",
             start: "Start",
@@ -817,7 +817,7 @@ function formatGroupedPassesToHTML(groupedPasses) {
                     <td>  <a href="javascript:void(0)" onclick="downloadICS('${eventTitle}', '${eventDate.toISOString()}', '${startTime}', '${endTime}')" style="color: #ffffbc;">${entryTime}  </a></td>
                     <td>${highestTime}</td>
 <td ${firstCellStyle}>
-  <a href="point.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
+  <a href="tools/satellite-tracker.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
     ${highestElevation}
     ${chartHTML}
   </a>
@@ -833,7 +833,7 @@ function formatGroupedPassesToHTML(groupedPasses) {
                     <td>  <a href="javascript:void(0)" onclick="downloadICS('${eventTitle}', '${eventDate.toISOString()}', '${startTime}', '${endTime}')" style="color: #ffffbc;">${entryTime}  </a></td>
                     <td>${highestTime}</td>
 <td ${firstCellStyle}>
-  <a href="point.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
+  <a href="tools/satellite-tracker.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
     ${highestElevation}
     ${chartHTML}
   </a>
@@ -987,7 +987,7 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
                 <td style="font-size: 50%; color: #ffffbc; font-weight: bold;">${satelliteName}</td>
                 <td>${highestTime}</td>
                 <td ${firstCellStyle}>
-  <a href="point.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
+  <a href="tools/satellite-tracker.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
     ${highestElevation}
     ${chartHTML}
   </a>
@@ -1009,7 +1009,7 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
 
                 <td>${highestTime}</td>
                 <td ${firstCellStyle}>
-  <a href="point.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
+  <a href="tools/satellite-tracker.html?index=${index + 1}" target="_blank" style="color: #ffffbc; display: flex; align-items: center; justify-content: center;">
     ${highestElevation}
     ${chartHTML}
   </a>
