@@ -20,7 +20,7 @@ openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout localhost.key -out loc
 ```
 If using iOS, you need to send the localhost.crt to the phone, install it as a profile and allow trust as a root certificate.
 
-2. Start the HTTPS server
+2. Start the HTTPS server (default port: `8987`)
 ```shell
 python3 server.py <optional port>;
 ```
@@ -29,7 +29,7 @@ python3 server.py <optional port>;
 ```shell
 sh ./update_tle.sh
 ```
-4. Visit https://localhost:\<port\> on a browser
+4. Visit https://localhost:8987 on a browser
 
 # Previews
 
