@@ -2,7 +2,7 @@
 
 Based on https://github.com/troilus/predict
 
-[User Manual](https://github.com/troilus/predict/blob/main/HowToUse.md)
+[User Manual](https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md)
 
 ## Features
 - Specific satellite pass information calculation
