@@ -3,7 +3,7 @@
 ## Features
 - Satellite pass information calculation
 - Use the phone to point at the satellite
-- Realtime frequency doppler shift calculation
+- Real-time frequency doppler shift calculation
 - SSTV decode
 - Add calendar reminder
 

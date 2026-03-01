@@ -1,19 +1,12 @@
 **ℹNote: When the webpage is opened for the first time, it will request location permissions. This is because the site needs your location to calculate satellite pass predictions.**
 
 ### 1. Interface
-(1) **ZH/EN**: Switch interface language.
 
-(2) **CODE**: View source code.
+(1) **SSTV DECODE**： A web based SSTV Decoder
 
-(3) **STAT**: View access statistics.
+(2) **Show favorites**: Calculate pass information for favorited satellites.
 
-(4) **SSTV DECODE**： A web based SSTV Decoder
-
-(5) **Show favorites**: Calculate pass information for favorited satellites.
-
-(6) **Show selected**: Calculate pass information for currently selected satellites.
-
-<img width="352" height="78" alt="image" src="https://github.com/user-attachments/assets/f2603420-34bb-429a-ab05-9dd2f94bcc30" />
+(3) **Show selected**: Calculate pass information for currently selected satellites.
 
 ### 2. Satellite Pass Prediction
 
