@@ -101,7 +101,6 @@ function gridToLatLon(grid) {
     return { lat, lon };
 }
 
-
 function updateTable() {
     let html = `
         <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
@@ -125,7 +124,6 @@ function updateTable() {
 
     document.getElementById('tableContainer').innerHTML = html;
 }
-
 
 function updateTableHeaders(lang) {
     const passInfoDiv = document.getElementById('passInfo');
@@ -162,10 +160,6 @@ function updateTableHeaders(lang) {
 
 function updateContent(lang) {
 
-
-
-
-
     const howToUseLink = document.getElementById('howToUseLink');
     if (howToUseLink) {
         howToUseLink.href = translations[lang].howToUseUrl;
@@ -200,7 +194,7 @@ window.addEventListener('load', function () {
         document.getElementById('addressinfo').textContent = 'Error getting location';
     });
 
-    fetch('/satonline.txt')
+    fetch('../../satellite_data/satonline.txt')
         .then(response => {
 
             if (!response.ok) {
@@ -246,22 +240,19 @@ function calculateMaidenhead(latitude, longitude, locationText) {
     // Construct the Maidenhead locator
     const locator = `${A[fieldLon]}${A[fieldLat]}${squareLon}${squareLat}${A[subsquareLon]}${A[subsquareLat]}`;
 
-
-
     const locationText2 = locationText
         .replace('${locatormg}', locator);
     document.getElementById('addressinfo').textContent = locationText2;
 
-
     return locator;
 }
-//        
+
 function gettleversion() {
     return new Promise((resolve, reject) => {
-        fetch('/satonline.txt')
+        fetch('../../satellite_data/satonline.txt')
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('网络响应失败');
+                    throw new Error('Error fetching LVE');
                 }
 
                 const lastModifiedfix = new Date(response.headers.get('Last-Modified'));
@@ -298,6 +289,7 @@ function parseSatellitesData(data) {
 
     return satellites;
 }
+
 function isFavorite(satelliteName) {
     const favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
 
@@ -325,7 +317,6 @@ function toggleFavorite(satelliteName) {
     localStorage.setItem('favorites', JSON.stringify(favorites));
     updateFavoriteButtonText()
 }
-
 
 function updateFavoriteButtonText() {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || {};
@@ -408,25 +399,15 @@ document.getElementById('searchInput').addEventListener('input', function () {
     });
 });
 
-/*document.getElementById('dropdownButton').addEventListener('click', function() {
-    const dropdown = document.getElementById('satelliteDropdown');
-    dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
-});*/
 document.getElementById('calculatePass').addEventListener('click', function () {
     const satelliteName = localStorage.getItem('selectedSatelliteName')
     document.getElementById('passInfo').innerHTML = translations[currentLang].calculating;
-
-
-
-
-    const locationText = document.getElementById('addressinfo').textContent;
 
     const confirmloc = localStorage.getItem('latitude');
     const isNumeric = (str) => /[0-9.-]/.test(str);
     const match = isNumeric(confirmloc)
 
     const timeFilterChecked = document.getElementById('timeFilter').checked;
-
 
     if (satelliteName && match) {
         const latitude = parseFloat(localStorage.getItem('latitude'));
@@ -454,6 +435,7 @@ document.getElementById('calculatePass').addEventListener('click', function () {
         document.getElementById('passInfo').innerHTML = translations[currentLang].unabletocalc;
     }
 });
+
 document.getElementById('calculatePassfavorite').addEventListener('click', function () {
 
     const locationText = document.getElementById('addressinfo').textContent;
@@ -470,10 +452,6 @@ document.getElementById('calculatePassfavorite').addEventListener('click', funct
         document.getElementById('passInfo').innerHTML = translations[currentLang].noFavorites;
         return;
     }
-
-
-
-
 
     if (match) {
         const latitude = parseFloat(localStorage.getItem('latitude'));
@@ -501,8 +479,6 @@ document.getElementById('calculatePassfavorite').addEventListener('click', funct
             });
 
         }
-
-
 
         document.getElementById('passInfo').innerHTML = formatGroupedPassesToHTMLfavorite(allGroupedPasses);
     } else {
@@ -618,7 +594,6 @@ function groupPasses(passes) {
     let hasAboveThreshold = false;
     const elevationThreshold = parseFloat(document.getElementById('elevationThreshold').value);
 
-
     passes.forEach((pass, index) => {
         if (!currentPass) {
             if (pass.elevation > 0) {
@@ -661,8 +636,6 @@ function groupPasses(passes) {
 
     return groupedPasses;
 }
-
-
 
 function groupPassesfavorite(passes) {
 
@@ -733,7 +706,6 @@ function saveSatelliteDataToLocalStorage(groupedPasses, satelliteName) {
     localStorage.setItem('selectedorbit', JSON.stringify(satelliteData));
 }
 
-
 function savefavoriteSatelliteDataToLocalStorage(allPasses) {
     const satelliteData = allPasses.map((item, index) => {
         const pass = item.pass;
@@ -757,8 +729,6 @@ function formatGroupedPassesToHTML(groupedPasses) {
 
     let prevEntryDate = "";  // Store the previous entry date for comparison
     let prevRowIndex = -1;   // Store the index of the previous row
-
-
 
     const satelliteName = localStorage.getItem('selectedSatelliteName');
 
@@ -792,19 +762,12 @@ function formatGroupedPassesToHTML(groupedPasses) {
             <tbody>
     `;
 
-
-
-
-
-
-
     groupedPasses.forEach((pass, index) => {
         const entrydate = pass.entry?.time ? new Date(pass.entry.time).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' }) : "未知时间";
         const entryTime = pass.entry?.time ? new Date(pass.entry.time).toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "未知时间";
         const entryAzimuth = typeof pass.entry?.azimuth === "number" ? `${pass.entry.azimuth.toFixed(2)}°` : "未知";
 
         const entryHour = new Date(pass.entry.time).getHours();
-
 
         const now = new Date();
         const isCurrent = pass.entry.time && pass.exit.time && now >= pass.entry.time && now <= pass.exit.time;
@@ -821,11 +784,6 @@ function formatGroupedPassesToHTML(groupedPasses) {
         } else {
             rowClass = "night";
         }
-
-
-
-
-
 
         lang = currentLang
         document.getElementById('notesInfo').innerHTML = translations[lang].notesInfo;
@@ -908,6 +866,7 @@ function formatGroupedPassesToHTML(groupedPasses) {
 
     return html;
 }
+
 function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
 
     let prevEntryDate = "";  // Store the previous entry date for comparison
@@ -929,11 +888,8 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
         // Add your logic for formatting passes here, if any
     }
 
-
     let allPasses = [];
     // Sort allGroupedPasses by the entry time of passes for each satellite
-
-
 
     let html = `
         <table border="1" style="border-collapse: collapse; width: 100%; text-align: center;">
@@ -958,8 +914,6 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
         const satelliteName = satelliteGroup.satelliteName;
         const groupedPasses = satelliteGroup.groupedPasses;
 
-
-
         groupedPasses.forEach((pass, index) => {
 
             const sortKey = pass.entry.time;
@@ -977,9 +931,6 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
     allPasses.sort((a, b) => {
         return a.sortKey - b.sortKey;
     });
-
-
-
 
     const savedSatelliteDataToLocalStorage = savefavoriteSatelliteDataToLocalStorage(allPasses)
 
@@ -1022,11 +973,6 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
         const eventDate = pass.entry?.time ? new Date(pass.entry.time) : new Date();
         const startTime = eventDate.toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const endTime = pass.exit?.time ? new Date(pass.exit.time).toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : startTime;
-
-
-
-
-
 
         if (entrydate === prevEntryDate) {
             // If the same, merge the cell
@@ -1075,10 +1021,6 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
             prevSat = satelliteName
         }
 
-
-
-
-
     });
 
     html += `
@@ -1086,11 +1028,8 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
     </table>
     `;
 
-
     // Append the HTML to the page
     document.getElementById('passInfo').innerHTML = html;
-
-
 
     // Now that the table is added, draw the trajectories
     setTimeout(() => {
@@ -1106,8 +1045,6 @@ function formatGroupedPassesToHTMLfavorite(allGroupedPasses) {
 
     return html;
 }
-
-
 
 function formatDate(date) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -1226,8 +1163,6 @@ function drawTrajectorySVG(svgContainer, selectedPass, scaleFactor = 0.17) {
     path.setAttribute('fill', 'none');
     svgContainer.appendChild(path);
 }
-
-
 
 document.addEventListener('click', function (event) {
     const searchInput = document.getElementById('searchInput');
