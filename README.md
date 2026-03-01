@@ -30,7 +30,7 @@ python3 server.py <optional port>;
 4. Update TLE database
 
 ```shell
-curl -k -o satonline.txt https://r4uab.ru/satonline.txt;
+curl -k -o satonline.txt https://www.amsat.org/tle/dailytle.txt;
 
 sed -i 's/ASRTU-1 (RS64S\/BJ2CR)/ASRTU-1 (RS64S\/BJ2CR\/AO-123)/g' satonline.txt;
 
