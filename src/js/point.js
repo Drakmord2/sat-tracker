@@ -735,7 +735,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to fetch data from the local JSON file
     function fetchSatelliteData(noradCatId, selectedsat) {
         // Load the JSON data from the local file
-        fetch('transmitters.json')
+        fetch('/satellite_data/transmitters.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to load transmitters.json');
