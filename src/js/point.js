@@ -126,7 +126,7 @@ window.onload = function () {
             document.getElementById('satellite-info').textContent = `📍AzNow: ${azimuthdg}° ElNow: ${elevationdg}° | 🔝MaxEl: ${selectedPass.highestElevation}° `;
             document.getElementById('pass-info').textContent = `🔼Start: ${formattedEntryTime} | 🔽End: ${formattedExitTime} `;
 
-            const formattedTime = now.toLocaleString('zh-CN', {
+            const formattedTime = now.toLocaleString('en-US', {
                 month: '2-digit',
                 day: '2-digit',
                 hour: '2-digit',
@@ -202,124 +202,6 @@ function drawCompassbackground() {
         tickMarksGroup.appendChild(line);
     }
 }
-
-
-
-
-function getRadiusForElevation(elevation, radius) {
-    if (elevation <= 30) return radius - (radius * 0.25) * (elevation / 30);
-    if (elevation <= 60) return radius * 0.75 - (radius * 0.25) * ((elevation - 30) / 30);
-    return radius * 0.5 - (radius * 0.25) * ((elevation - 60) / 30);
-}
-
-function drawTrajectory(ctx, selectedPass, satrec, observerGd) {
-
-
-    const startTime = new Date(selectedPass.entryTime);
-    const endTime = new Date(selectedPass.exitTime);
-
-    const steps = 1000;
-    const timeStep = (endTime - startTime) / steps;
-
-
-    const trajectoryPoints = [];
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const trajectoryColor = isDarkMode ? 'cyan' : '#007aff';
-    const arrowColor = isDarkMode ? '#94ff00' : 'red';
-    const pointColor = isDarkMode ? 'yellow' : 'green';
-
-
-
-    // Loop through selectedPass (pass times or observations) and calculate satellite position
-    for (let i = 0; i <= steps; i++) {
-        const passTime = new Date(startTime.getTime() + i * timeStep);
-
-
-        // Get the satellite position at this pass time
-        const positionAndVelocity = satellite.propagate(satrec, passTime);
-        const gmst = satellite.gstime(passTime);
-        const positionEci = positionAndVelocity.position;
-
-        // Get the look angles (elevation and azimuth) at this time
-        const lookAngles = satellite.ecfToLookAngles(
-            observerGd,
-            satellite.eciToEcf(positionEci, gmst)
-        );
-
-        const elevation = satellite.radiansToDegrees(lookAngles.elevation);
-        const azimuth = satellite.radiansToDegrees(lookAngles.azimuth);
-
-        // Only consider valid look angles (elevation between 0 and 90 degrees)
-        if (elevation > 0 && elevation <= 90) {
-            const centerX = 150;
-            const centerY = 150;
-            const radius = 140;
-
-            // Map elevation to a radius on the compass
-            const satelliteRadius = radius * (90 - elevation) / 90;
-
-            // Calculate the x, y coordinates of the satellite on the compass
-            const satelliteX = centerX + satelliteRadius * Math.cos((90 - azimuth) * (Math.PI / 180));
-            const satelliteY = centerY - satelliteRadius * Math.sin((90 - azimuth) * (Math.PI / 180));
-
-            // Store the trajectory points
-            trajectoryPoints.push({ x: satelliteX, y: satelliteY, time: passTime, eleva: elevation });
-        }
-    }
-
-    // Draw the trajectory line connecting all points
-    ctx.beginPath();
-    ctx.moveTo(trajectoryPoints[0].x, trajectoryPoints[0].y);
-
-    for (let i = 1; i < trajectoryPoints.length; i++) {
-        ctx.lineTo(trajectoryPoints[i].x, trajectoryPoints[i].y);
-
-    }
-    ctx.strokeStyle = trajectoryColor;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Function to draw arrows
-    function drawArrow(x1, y1, x2, y2, color) {
-        const headLength = 10; // Length of the arrowhead
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const angle = Math.atan2(dy, dx);
-
-        // Draw line
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Draw arrowhead
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-        ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-        ctx.lineTo(x2, y2);
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
-
-    // Draw arrows at 1/3 and 2/3 of the trajectory
-    const oneThirdIndex = Math.floor(trajectoryPoints.length / 2);
-
-    if (trajectoryPoints.length > 2) {
-        const arrow1Start = trajectoryPoints[oneThirdIndex - 1];
-        const arrow1End = trajectoryPoints[oneThirdIndex];
-        drawArrow(arrow1Start.x, arrow1Start.y, arrow1End.x, arrow1End.y, arrowColor);
-    }
-
-
-
-    return trajectoryPoints;
-}
-
-
 
 function drawTrajectorySVG(svgContainer, selectedPass, satrec, observerGd) {
     const startTime = new Date(selectedPass.entryTime);
@@ -435,79 +317,6 @@ function drawDebugPoint(ctx, x, y, color, label) {
     ctx.font = '12px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(label, x + 5, y - 5);
-}
-
-function updateSatellitePosition(ctx, trajectoryPoints) {
-    const now = new Date();
-
-    let closestPoint = trajectoryPoints[0];
-
-    let minTimeDiff = Math.abs(now - closestPoint.time);
-    for (let i = 1; i < trajectoryPoints.length; i++) {
-        const timeDiff = Math.abs(now - trajectoryPoints[i].time);
-        if (timeDiff < minTimeDiff) {
-            closestPoint = trajectoryPoints[i];
-            minTimeDiff = timeDiff;
-
-        }
-    }
-
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    const satelliteColor = isDarkMode ? 'cyan' : '#007aff';
-    const lineColor = isDarkMode ? 'lime' : '#007aff';
-    const elevationBarColor = isDarkMode ? '#333' : '#ddd';
-    const elevationPointColor = isDarkMode ? '#ff0' : '#0066cc';
-
-    const elevationBar = document.getElementById('elevation-bar');
-    const satelliteElevation = document.getElementById('satellite-elevation');
-    satelliteElevation.style.display = 'block';
-
-    const barHeight = elevationBar.offsetHeight - 9;
-
-
-    if (closestPoint.eleva > 0 && closestPoint.eleva <= 90) {
-
-        const satelliteElevationDistance = (90 - closestPoint.eleva) / 90 * barHeight;
-
-        satelliteElevation.style.top = `${satelliteElevationDistance - satelliteElevation.offsetHeight / 2}px`;
-
-
-    } else {
-        satelliteElevation.style.display = 'none';
-    }
-
-    ctx.clearRect(0, 0, 300, 300);
-
-    if (closestPoint.eleva > 0 && closestPoint.eleva <= 90) {
-
-        const centerX = 150;
-        const centerY = 150;
-
-        ctx.beginPath();
-        ctx.arc(closestPoint.x, closestPoint.y, 5, 0, 2 * Math.PI);
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        ctx.fillStyle = satelliteColor;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(closestPoint.x, closestPoint.y);
-        ctx.strokeStyle = satelliteColor;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-
-    } else if (closestPoint.eleva < 0) {
-
-        ctx.clearRect(0, 0, 300, 300);
-
-
-    }
-
 }
 
 function updateSatellitePositionsvg(trajectoryPoints) {
@@ -638,7 +447,8 @@ function handler(e) {
     const arrowX = centerX;  // Keep the arrow horizontally centered
 
     // Control red point visibility based on compass angle
-
+    // TODO: Fix based on gyroscope
+    
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
 
@@ -679,9 +489,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const satelliteInfo = document.getElementById('satellite-feqinfo');
     const urlParams = new URLSearchParams(window.location.search);
     const index = urlParams.get('index');
-
-    // Authorization token (use the correct token here)
-    const authorizationToken = '04dbc5423ace07e1caad69925c275a4d4d48d342';
 
     infoButton.addEventListener('click', function () {
         const satelliteData = JSON.parse(localStorage.getItem('selectedorbit'));
