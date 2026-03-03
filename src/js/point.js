@@ -413,17 +413,10 @@ function handler(e) {
 
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
 
-    const pevel = document.getElementById('pevel');
-    pevel.innerHTML = `<p>Compass alpha: ${e.alpha}</p><br><p>Compass beta: ${e.beta}</p><br><p>Compass gamma: ${e.gamma}</p>`;
-
-    // Define the center of the compass
-    const centerX = 150;
-    const centerY = 150;
-
-    // TODO: Fix rotation past 45 degrees inclination
+    // Fix rotation past 45 degrees inclination on the iPhone
     let rotation = -compass;
-    if (Math.abs(e.beta) > 135) {
-        rotation = compass;
+    if (Math.abs(e.beta) >= 135) {
+        rotation -= 180;
     }
 
     // Rotate compass circle
