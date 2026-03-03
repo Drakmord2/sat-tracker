@@ -337,6 +337,7 @@ function updateSatellitePositionsvg(trajectoryPoints) {
     const satelliteElevation = document.getElementById('satellite-elevation');
     satelliteElevation.style.display = 'block';
 
+    // TODO: Fix
     const barHeight = elevationBar.offsetHeight - 9;
 
     if (closestPoint.eleva > 0 && closestPoint.eleva <= 90) {
@@ -450,6 +451,7 @@ function handler(e) {
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
 
+    // TODO: Fix
     const barHeight = elevationBar.offsetHeight - 9;
 
     if (beta > 180) {
