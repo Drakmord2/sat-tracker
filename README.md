@@ -1,17 +1,15 @@
 # Satellite tracker
 
-Based on https://github.com/troilus/predict
-
-[User Manual](https://github.com/troilus/predict/blob/main/HowToUse.md)
-
 ## Features
-- Specific satellite pass information calculation
+- Satellite pass information calculation
 - Use the phone to point at the satellite
-- Add to calendar reminder
-- Frequency doppler display
-- SSTV decode(based on https://github.com/Equinoxis/sstv-decoder)
+- Real-time frequency doppler shift calculation
+- SSTV decode
+- Add calendar reminder
 
-## Host
+[User Manual](https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md)
+
+## Self Host
 
 1. Create a local SSL cert
 ```shell
@@ -22,25 +20,27 @@ openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout localhost.key -out loc
 ```
 If using iOS, you need to send the localhost.crt to the phone, install it as a profile and allow trust as a root certificate.
 
-2. Start the HTTPS server
+2. Start the HTTPS server (default port: `8987`)
 ```shell
 python3 server.py <optional port>;
 ```
-3. Visit  in browser
-4. Update TLE database
+3. Update TLE database
 
 ```shell
 sh ./update_tle.sh
 ```
+4. Visit https://localhost:8987 on a browser
 
----
+# Previews
 
-![image](./assets/398651661-b3f25fe0-a0d7-4f1b-8399-e2fc748120e1.png)
-![image](./assets/398651820-f56bee9a-49da-4a48-96db-7c394d5e3c09.png)
-<img width="390" height="688" alt="image" src="./assets/482912705-b706b319-d339-415a-b782-d7df7c01c53c.png" />
+![image](./assets/home-page.png)
+![image](./assets/tracking.png)
+<img height="688" alt="image" src="./assets/sstv.png" />
 
 ## Sources
-- https://r4uab.ru/ (TLEs)
+- Based on https://github.com/troilus/predict
+- https://www.amsat.org (TLEs)
+- https://db.satnogs.org (Active satellites)
 - https://github.com/shashwatak/satellite-js
 - https://github.com/mourner/suncalc
 - https://github.com/Equinoxis/sstv-decoder
