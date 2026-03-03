@@ -451,18 +451,18 @@ function handler(e) {
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
 
-    // TODO: Fix
     const barHeight = elevationBar.offsetHeight - 9;
 
-    if (beta > 180) {
-        adjustedBeta = 180;
-    } else if (beta < 0) {
+    const abs_beta = Math.abs(beta);
+    if (abs_beta > 180) {
+        adjustedBeta = 90;
+    } else if (abs_beta <= 90) {
         adjustedBeta = 0;
     } else {
-        adjustedBeta = beta;
+        adjustedBeta = abs_beta-90;
     }
 
-    const elevationDistance = (180 - adjustedBeta) / 180 * barHeight;
+    const elevationDistance = (90 - adjustedBeta) / 90 * barHeight;
 
     arrowElevation.style.top = `${elevationDistance - arrowElevation.offsetHeight / 2}px`;
 }
