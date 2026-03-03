@@ -1,11 +1,12 @@
 # Satellite tracker
 
 ## Features
-- Satellite pass information calculation
-- Use the phone to point at the satellite
+- Satellite pass predictions
+- Use the phone to point at the satellite (azimuth and elevation tracking)
 - Real-time frequency doppler shift calculation
-- SSTV decode
-- Add calendar reminder
+- Audio recording for your QSOs or SSTV transmissions
+- SSTV decoding
+- Add calendar reminders
 
 [User Manual](https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md)
 
