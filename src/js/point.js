@@ -837,7 +837,26 @@ document.addEventListener('DOMContentLoaded', function () {
     function startRecording() {
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(function (stream) {
-                mediaRecorder = new MediaRecorder(stream);
+                let mimeType = 'audio/webm';
+                const supportedTypes = [
+                    'audio/mpeg',
+                    'audio/wav',
+                    'audio/mp3',
+                    'audio/mp4',
+                    'audio/webm;codecs=opus'
+                ];
+
+                for (const type of supportedTypes) {
+                    if (MediaRecorder.isTypeSupported(type)) {
+                        mimeType = type;
+                        break;
+                    }
+                }
+
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType
+                });
+
                 mediaRecorder.start(1000);
 
                 mediaRecorder.ondataavailable = function (event) {
@@ -850,14 +869,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     stream.getTracks().forEach(track => track.stop());
                     stopRecordingStatus();
 
-                    audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioUrl = URL.createObjectURL(audioBlob);
-                    audioFile = new File([audioBlob], `${getSatelliteName()}-${getCurrentTimestamp()}.wav`, { type: 'audio/wav' });
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    const audioUrl = URL.createObjectURL(audioBlob);
 
-                    fileSizeInMB = audioBlob.size / (1024 * 1024);
+                    const extensions = {
+                        'audio/webm;codecs=opus': 'webm',
+                        'audio/webm': 'webm',
+                        'audio/mp4': 'mp4',
+                        'audio/mp3': 'mp3',
+                        'audio/mpeg': 'mp3',
+                        'audio/wav': 'wav'
+                    };
+                    const extension = extensions[mimeType] || 'webm';
+
+                    const filename = `${getSatelliteName()}-${getCurrentTimestamp()}.${extension}`;
+
+                    const fileSizeInMB = audioBlob.size / (1024 * 1024);
 
                     const downloadText = recordingTranslations[currentLang].downloadAudio;
                     downloadBtn.textContent = `${downloadText} - ${fileSizeInMB.toFixed(2)}MB`;
+
+                    localStorage.setItem('audioUrl', audioUrl);
+                    localStorage.setItem('audioFilename', filename);
 
                     downloadBtn.removeEventListener('click', downloadAudio);
                     downloadBtn.addEventListener('click', downloadAudio);
@@ -870,9 +903,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function downloadAudio() {
         const link = document.createElement('a');
-        link.href = audioUrl;
-        link.download = audioFile.name;
+        link.setAttribute('href', localStorage.getItem('audioUrl'));
+        link.setAttribute('download', localStorage.getItem('audioFilename'));
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     }
 
     // Function to get the satellite name (you can replace this logic with actual satellite name)
