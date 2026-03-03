@@ -447,22 +447,20 @@ function handler(e) {
     const arrowX = centerX;  // Keep the arrow horizontally centered
 
     // Control red point visibility based on compass angle
-    // TODO: Fix based on gyroscope
-    
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
 
     const barHeight = elevationBar.offsetHeight - 9;
 
-    if (beta > 90) {
-        adjustedBeta = 90;
+    if (beta > 180) {
+        adjustedBeta = 180;
     } else if (beta < 0) {
         adjustedBeta = 0;
     } else {
         adjustedBeta = beta;
     }
 
-    const elevationDistance = (90 - adjustedBeta) / 90 * barHeight;
+    const elevationDistance = (180 - adjustedBeta) / 180 * barHeight;
 
     arrowElevation.style.top = `${elevationDistance - arrowElevation.offsetHeight / 2}px`;
 }
