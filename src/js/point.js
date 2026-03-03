@@ -337,7 +337,6 @@ function updateSatellitePositionsvg(trajectoryPoints) {
     const satelliteElevation = document.getElementById('satellite-elevation');
     satelliteElevation.style.display = 'block';
 
-    // TODO: Fix
     const barHeight = elevationBar.offsetHeight - 9;
 
     if (closestPoint.eleva > 0 && closestPoint.eleva <= 90) {
@@ -414,39 +413,35 @@ function handler(e) {
 
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
 
+    const pevel = document.getElementById('pevel');
+    pevel.innerHTML = `<p>Compass alpha: ${e.alpha}</p><br><p>Compass beta: ${e.beta}</p><br><p>Compass gamma: ${e.gamma}</p>`;
+
     // Define the center of the compass
     const centerX = 150;
     const centerY = 150;
 
+    // TODO: Fix rotation past 45 degrees inclination
+    let rotation = -compass;
+    if (Math.abs(e.beta) > 135) {
+        rotation = compass;
+    }
+
     // Rotate compass circle
-    compassbackground.style.transform = `rotate(${-compass}deg)`;
+    compassbackground.style.transform = `rotate(${rotation}deg)`;
 
     // Rotate trajectory canvas
     const trajectoryCanvas = document.getElementById('trajectory-svg');
     trajectoryCanvas.style.transformOrigin = 'center';
-    trajectoryCanvas.style.transform = `rotate(${-compass}deg)`;
+    trajectoryCanvas.style.transform = `rotate(${rotation}deg)`;
 
     const satorbitpointCanvas = document.getElementById('satorbitpointsvg');
     satorbitpointCanvas.style.transformOrigin = 'center';
-    satorbitpointCanvas.style.transform = `rotate(${-compass}deg)`;
-
+    satorbitpointCanvas.style.transform = `rotate(${rotation}deg)`;
 
     // Handle arrow position based on beta
     const beta = e.beta;  // Get the beta value from the event
-    const arrow = document.querySelector('.arrow');
 
-    // Radius of the compass circle
-    const radius = 140;
-
-    // Map beta value to distance: 
-    // When beta = 0, distance = radius (edge)
-    // When beta = 90, distance = 0 (center)
-    const distance = (90 - beta) / 90 * radius;  // Inverse the scaling to match your requirement
-
-    // Calculate the Y position based on beta (upward or downward movement)
-    const arrowY = centerY - 50;  // Adjust Y position to move the arrow vertically
-    const arrowX = centerX;  // Keep the arrow horizontally centered
-
+    // Elevation tracking
     // Control red point visibility based on compass angle
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
