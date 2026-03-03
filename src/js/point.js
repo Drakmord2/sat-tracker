@@ -413,54 +413,44 @@ function handler(e) {
 
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
 
-    // Define the center of the compass
-    const centerX = 150;
-    const centerY = 150;
+    // Fix rotation past 45 degrees inclination on the iPhone
+    let rotation = -compass;
+    if (Math.abs(e.beta) >= 135) {
+        rotation -= 180;
+    }
 
     // Rotate compass circle
-    compassbackground.style.transform = `rotate(${-compass}deg)`;
+    compassbackground.style.transform = `rotate(${rotation}deg)`;
 
     // Rotate trajectory canvas
     const trajectoryCanvas = document.getElementById('trajectory-svg');
     trajectoryCanvas.style.transformOrigin = 'center';
-    trajectoryCanvas.style.transform = `rotate(${-compass}deg)`;
+    trajectoryCanvas.style.transform = `rotate(${rotation}deg)`;
 
     const satorbitpointCanvas = document.getElementById('satorbitpointsvg');
     satorbitpointCanvas.style.transformOrigin = 'center';
-    satorbitpointCanvas.style.transform = `rotate(${-compass}deg)`;
-
+    satorbitpointCanvas.style.transform = `rotate(${rotation}deg)`;
 
     // Handle arrow position based on beta
     const beta = e.beta;  // Get the beta value from the event
-    const arrow = document.querySelector('.arrow');
 
-    // Radius of the compass circle
-    const radius = 140;
-
-    // Map beta value to distance: 
-    // When beta = 0, distance = radius (edge)
-    // When beta = 90, distance = 0 (center)
-    const distance = (90 - beta) / 90 * radius;  // Inverse the scaling to match your requirement
-
-    // Calculate the Y position based on beta (upward or downward movement)
-    const arrowY = centerY - 50;  // Adjust Y position to move the arrow vertically
-    const arrowX = centerX;  // Keep the arrow horizontally centered
-
+    // Elevation tracking
     // Control red point visibility based on compass angle
     const elevationBar = document.getElementById('elevation-bar');
     const arrowElevation = document.getElementById('arrow-elevation');
 
     const barHeight = elevationBar.offsetHeight - 9;
 
-    if (beta > 180) {
-        adjustedBeta = 180;
-    } else if (beta < 0) {
+    const abs_beta = Math.abs(beta);
+    if (abs_beta > 180) {
+        adjustedBeta = 90;
+    } else if (abs_beta <= 90) {
         adjustedBeta = 0;
     } else {
-        adjustedBeta = beta;
+        adjustedBeta = abs_beta-90;
     }
 
-    const elevationDistance = (180 - adjustedBeta) / 180 * barHeight;
+    const elevationDistance = (90 - adjustedBeta) / 90 * barHeight;
 
     arrowElevation.style.top = `${elevationDistance - arrowElevation.offsetHeight / 2}px`;
 }
