@@ -412,12 +412,14 @@ function updateProgressBar(entryTime, exitTime, now) {
 function handler(e) {
 
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+    let azimuth = compass;
 
     // Fix rotation past 45 degrees inclination on the iPhone
     const abs_beta = Math.abs(e.beta);
     let rotation = -compass;
     if (abs_beta >= 135) {
         rotation -= 180;
+        azimuth += 180;
     }
 
     // Rotate compass circle
@@ -439,26 +441,42 @@ function handler(e) {
 
     const barHeight = elevationBar.offsetHeight - 9;
 
-    // TODO: Add configuration to select handheld or mounted phone
-    if (abs_beta > 180) {
-        adjustedBeta = 90;
-    } else if (abs_beta <= 90) {
-        adjustedBeta = 0;
-    } else {
-        adjustedBeta = abs_beta-90;
-    }
+    // Select handheld or mounted phone mode
+    const isPhoneMounted = localStorage.getItem('phoneMounted') ?? false;
 
+    if (isPhoneMounted) {
+        if (abs_beta > 90) {
+            adjustedBeta = 90;
+        } else if (abs_beta <= 0) {
+            adjustedBeta = 0;
+        } else {
+            adjustedBeta = abs_beta;
+        }
+    } else {
+        if (abs_beta > 180) {
+            adjustedBeta = 90;
+        } else if (abs_beta <= 90) {
+            adjustedBeta = 0;
+        } else {
+            adjustedBeta = abs_beta-90;
+        }
+    }
+    
     const elevationDistance = (90 - adjustedBeta) / 90 * barHeight;
 
     arrowElevation.style.top = `${elevationDistance - arrowElevation.offsetHeight / 2}px`;
+
+    const azimuthDisplay = document.getElementById('azimuth-degrees');
+    azimuthDisplay.innerHTML = `<p>Azimuth: ${azimuth.toFixed(2)}°</p>`;
+    const elevationDisplay = document.getElementById('elevation-degrees');
+    elevationDisplay.innerHTML = `<p>Elevation: ${adjustedBeta.toFixed(2)}°</p>`;
 }
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function (event) {
-
         alpha = event.alpha,
-            beta = event.beta,
-            gamma = event.gamma;
+        beta = event.beta,
+        gamma = event.gamma;
 
         // Update arrow and compass position
         handler(event);
