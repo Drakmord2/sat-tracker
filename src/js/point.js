@@ -414,8 +414,9 @@ function handler(e) {
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
 
     // Fix rotation past 45 degrees inclination on the iPhone
+    const abs_beta = Math.abs(e.beta);
     let rotation = -compass;
-    if (Math.abs(e.beta) >= 135) {
+    if (abs_beta >= 135) {
         rotation -= 180;
     }
 
@@ -431,9 +432,6 @@ function handler(e) {
     satorbitpointCanvas.style.transformOrigin = 'center';
     satorbitpointCanvas.style.transform = `rotate(${rotation}deg)`;
 
-    // Handle arrow position based on beta
-    const beta = e.beta;  // Get the beta value from the event
-
     // Elevation tracking
     // Control red point visibility based on compass angle
     const elevationBar = document.getElementById('elevation-bar');
@@ -441,7 +439,7 @@ function handler(e) {
 
     const barHeight = elevationBar.offsetHeight - 9;
 
-    const abs_beta = Math.abs(beta);
+    // TODO: Add configuration to select handheld or mounted phone
     if (abs_beta > 180) {
         adjustedBeta = 90;
     } else if (abs_beta <= 90) {
