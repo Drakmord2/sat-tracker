@@ -48,38 +48,42 @@ function updatePlaceholder() {
 }
 
 function showManualLocationPrompt(tleversion) {
-    const notesDiv = document.getElementById('notesInfo');
     const manualButton = document.getElementById('manual-location');
 
     manualButton.onclick = function () {
         const previous_grid = localStorage.getItem('maidenhead-grid') ?? '';
         const grid = prompt('Enter 6-character Maidenhead grid (e.g: OM89av)', previous_grid);
 
-        if (grid && /^[A-R]{2}[0-9]{2}[A-X]{2}$/i.test(grid)) {
-            const latLon = gridToLatLon(grid.toUpperCase());
-            if (latLon) {
-                const latitude = latLon.lat;
-                const longitude = latLon.lon;
-                const latitudefix = latitude.toFixed(2);
-                const longitudefix = longitude.toFixed(2);
-                localStorage.setItem('latitude', latitude);
-                localStorage.setItem('longitude', longitude);
-                localStorage.setItem('altitude', 0);
-                localStorage.setItem('maidenhead-grid', grid);
-
-                const locationText = translations[currentLang].location
-                    .replace('${latitude}', latitudefix)
-                    .replace('${longitude}', longitudefix)
-                    .replace('${gettleversion}', tleversion);
-                calculateMaidenhead(latitude, longitude, locationText);
-                notesDiv.innerHTML = translations[currentLang].notesInfo;
-            } else {
-                alert('Invalid grid');
-            }
-        } else if (grid) {
-            alert('Invalid format, use 6 chars (e.g: OM89av)');
-        }
+        parseGrid(grid, tleversion);
     };
+}
+
+function parseGrid(grid, tleversion) {
+    const notesDiv = document.getElementById('notesInfo');
+    if (grid && /^[A-R]{2}[0-9]{2}[A-X]{2}$/i.test(grid)) {
+        const latLon = gridToLatLon(grid.toUpperCase());
+        if (latLon) {
+            const latitude = latLon.lat;
+            const longitude = latLon.lon;
+            const latitudefix = latitude.toFixed(2);
+            const longitudefix = longitude.toFixed(2);
+            localStorage.setItem('latitude', latitude);
+            localStorage.setItem('longitude', longitude);
+            localStorage.setItem('altitude', 0);
+            localStorage.setItem('maidenhead-grid', grid);
+
+            const locationText = translations[currentLang].location
+                .replace('${latitude}', latitudefix)
+                .replace('${longitude}', longitudefix)
+                .replace('${gettleversion}', tleversion);
+            calculateMaidenhead(latitude, longitude, locationText);
+            notesDiv.innerHTML = translations[currentLang].notesInfo;
+        } else {
+            alert('Invalid grid');
+        }
+    } else if (grid) {
+        alert('Invalid format, use 6 chars (e.g: OM89av)');
+    }
 }
 
 function gridToLatLon(grid) {
@@ -236,6 +240,8 @@ window.addEventListener('load', function () {
 
     // Get tleversion asynchronously
     gettleversion().then(tleversion => {
+        const previous_grid = localStorage.getItem('maidenhead-grid') ?? '';
+        parseGrid(previous_grid, tleversion);
         showManualLocationPrompt(tleversion);
     }, function (error) {
         document.getElementById('addressinfo').textContent = 'Error getting location';
