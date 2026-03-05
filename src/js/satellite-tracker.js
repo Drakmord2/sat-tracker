@@ -73,7 +73,7 @@ window.onload = function () {
         button.textContent = 'iOS Device Sensor Authorization';
 
 
-        const formattedEntryTime = entryTime.toLocaleString('zh-CN', {
+        const formattedEntryTime = entryTime.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
@@ -81,7 +81,7 @@ window.onload = function () {
             second: '2-digit'
         });
 
-        const formattedExitTime = exitTime.toLocaleString('zh-CN', {
+        const formattedExitTime = exitTime.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
@@ -89,7 +89,8 @@ window.onload = function () {
             second: '2-digit'
         });
 
-        document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} `;
+        const noradId = satelliteTLE2 ? satelliteTLE2.split(' ')[1] : '';
+        document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} [${noradId}]`;
         document.getElementById('satellite-info').textContent = `📍AzNow: ° ElNow: ° 🔝MaxEl：${selectedPass.highestElevation}° `;
         document.getElementById('pass-info').textContent = `🔼Start: ${formattedEntryTime} | 🔽End: ${formattedExitTime} `;
         document.getElementById('time-info').textContent = "";
@@ -118,11 +119,9 @@ window.onload = function () {
 
             const elevationdg = satellite.radiansToDegrees(lookAngles.elevation).toFixed(2);
             const azimuthdg = satellite.radiansToDegrees(lookAngles.azimuth).toFixed(2);
-            const distance = satellite.eciToGeodetic(positionEci).height.toFixed(2);
-            const height = positionEci.z.toFixed(2);
 
-
-            document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} `;
+            const noradId = satelliteTLE2 ? satelliteTLE2.split(' ')[1] : '';
+            document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} [${noradId}]`;
             document.getElementById('satellite-info').textContent = `📍AzNow: ${azimuthdg}° ElNow: ${elevationdg}° | 🔝MaxEl: ${selectedPass.highestElevation}° `;
             document.getElementById('pass-info').textContent = `🔼Start: ${formattedEntryTime} | 🔽End: ${formattedExitTime} `;
 
