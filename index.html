@@ -21,8 +21,7 @@
         <h1><img src='assets/KE2HPP.png' alt="KE2HPP" width="200" height="200"></h1>
 
         <div class="lang-toggle">
-            <a href="#" id="howToUseLink" target="_blank" class="link">HOW TO USE</a>|<a href="/tools/sstv-decoder/" target="_blank">SSTV
-                DECODE</a>
+            <a href="#" id="howToUseLink" target="_blank" class="link">HOW TO USE</a>|<a href="/tools/sstv-decoder/" target="_blank">SSTV DECODE</a>|<a id="app-settings">SETTINGS</a>
         </div>
 
         <div class="search-container">
@@ -77,9 +76,17 @@
         </div>
         <div id="addressinfo" style="font-weight: bold;  font-size: 11px;"></div>
         <div id="notesInfo" style="font-weight: bold; padding-bottom: 10px; font-size: 11px;"></div>
+        <button id="manual-location" class="manual-location">Set location</button>
         <div id="passInfo" style=" width: 100%; text-align: center;"></div>
         <div id="made">
             <div>Modded by KE2HPP</div>
+        </div>
+
+        <div id="settings-popup" class="popup">
+            <div class="popup-content">
+                <button id="close-btn" class="close-btn">x</button>
+                <div id="settings-info"></div>
+            </div>
         </div>
 
         <script src="/src/vendor/satellite.js"></script>

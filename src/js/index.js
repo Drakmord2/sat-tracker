@@ -48,38 +48,42 @@ function updatePlaceholder() {
 }
 
 function showManualLocationPrompt(tleversion) {
-    const notesDiv = document.getElementById('notesInfo');
-    const manualButton = document.createElement('button');
-    manualButton.textContent = 'Manual';
-    manualButton.className = 'manual-button';
-    manualButton.onclick = function () {
-        const grid = prompt('Enter 6-character Maidenhead grid (e.g: OM89av)');
-        if (grid && /^[A-R]{2}[0-9]{2}[A-X]{2}$/i.test(grid)) {
-            const latLon = gridToLatLon(grid.toUpperCase());
-            if (latLon) {
-                const latitude = latLon.lat;
-                const longitude = latLon.lon;
-                const latitudefix = latitude.toFixed(2);
-                const longitudefix = longitude.toFixed(2);
-                localStorage.setItem('latitude', latitude);
-                localStorage.setItem('longitude', longitude);
-                localStorage.setItem('altitude', 0);
+    const manualButton = document.getElementById('manual-location');
 
-                const locationText = translations[currentLang].location
-                    .replace('${latitude}', latitudefix)
-                    .replace('${longitude}', longitudefix)
-                    .replace('${gettleversion}', tleversion);
-                calculateMaidenhead(latitude, longitude, locationText);
-                notesDiv.innerHTML = translations[currentLang].notesInfo;
-            } else {
-                alert('Invalid grid');
-            }
-        } else if (grid) {
-            alert('Invalid format, use 6 chars (e.g: OM89av)');
-        }
+    manualButton.onclick = function () {
+        const previous_grid = localStorage.getItem('maidenhead-grid') ?? '';
+        const grid = prompt('Enter 6-character Maidenhead grid (e.g: OM89av)', previous_grid);
+
+        parseGrid(grid, tleversion);
     };
-    notesDiv.innerHTML = translations[currentLang].nolocation + ' ';
-    notesDiv.appendChild(manualButton);
+}
+
+function parseGrid(grid, tleversion) {
+    const notesDiv = document.getElementById('notesInfo');
+    if (grid && /^[A-R]{2}[0-9]{2}[A-X]{2}$/i.test(grid)) {
+        const latLon = gridToLatLon(grid.toUpperCase());
+        if (latLon) {
+            const latitude = latLon.lat;
+            const longitude = latLon.lon;
+            const latitudefix = latitude.toFixed(2);
+            const longitudefix = longitude.toFixed(2);
+            localStorage.setItem('latitude', latitude);
+            localStorage.setItem('longitude', longitude);
+            localStorage.setItem('altitude', 0);
+            localStorage.setItem('maidenhead-grid', grid);
+
+            const locationText = translations[currentLang].location
+                .replace('${latitude}', latitudefix)
+                .replace('${longitude}', longitudefix)
+                .replace('${gettleversion}', tleversion);
+            calculateMaidenhead(latitude, longitude, locationText);
+            notesDiv.innerHTML = translations[currentLang].notesInfo;
+        } else {
+            alert('Invalid grid');
+        }
+    } else if (grid) {
+        alert('Invalid format, use 6 chars (e.g: OM89av)');
+    }
 }
 
 function gridToLatLon(grid) {
@@ -178,6 +182,16 @@ updateFavoriteButtonText()
 
 let satellites = [];
 
+function toggleSetting(setting_name) {
+    let settings = localStorage.getItem('settings') || '{}';
+    settings = JSON.parse(settings);
+    settings[setting_name] = !settings[setting_name];
+    localStorage.setItem('settings', JSON.stringify(settings));
+
+    document.getElementById('close-btn').click();
+    document.getElementById('app-settings').click();
+}
+
 window.addEventListener('load', function () {
     document.getElementById('addressinfo').textContent = translations[currentLang].locationDefault;
     localStorage.removeItem('selectedSatelliteName');
@@ -187,8 +201,47 @@ window.addEventListener('load', function () {
     localStorage.removeItem('selectedorbit');
     localStorage.removeItem('freqinfo');
 
+    const appSettings =  document.getElementById('app-settings');
+    const popup = document.getElementById('settings-popup');
+    appSettings.onclick = () => {
+        const settingsInfo = document.getElementById('settings-info');
+
+        let content = `<h3>Settings</h3>`;
+
+        const settings_data = JSON.parse(this.localStorage.getItem('settings'));
+        const phoneMount = settings_data?.phoneMounted;
+
+        content += `
+            <p style="font-size: 12px; color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
+                Mounted phone: ${phoneMount}
+                <button onClick="toggleSetting('phoneMounted')">Toggle</button>
+            </p>
+        `;
+
+        // Display the content
+        settingsInfo.innerHTML = content;
+
+        // Show the popup
+        popup.style.display = 'block';
+    };
+
+    // Close the popup when the close button is clicked
+    const closeButton = document.getElementById('close-btn');
+    closeButton.addEventListener('click', function () {
+        popup.style.display = 'none';
+    });
+
+    // Close the popup if user clicks outside the popup content
+    window.addEventListener('click', function (event) {
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
+
     // Get tleversion asynchronously
     gettleversion().then(tleversion => {
+        const previous_grid = localStorage.getItem('maidenhead-grid') ?? '';
+        parseGrid(previous_grid, tleversion);
         showManualLocationPrompt(tleversion);
     }, function (error) {
         document.getElementById('addressinfo').textContent = 'Error getting location';
@@ -351,7 +404,6 @@ function populateDropdown(satellites) {
                     starButton.textContent = '⚪';
                 }
 
-                const noradId = satellite.tle[1].split(' ')[1];
                 document.title = '🛰' + satellite.name;
                 localStorage.setItem('selectedSatelliteName', satellite.name);
                 localStorage.setItem('selectedSatelliteTLE1', satellite.tle[0]);

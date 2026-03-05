@@ -73,7 +73,7 @@ window.onload = function () {
         button.textContent = 'iOS Device Sensor Authorization';
 
 
-        const formattedEntryTime = entryTime.toLocaleString('zh-CN', {
+        const formattedEntryTime = entryTime.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
@@ -81,7 +81,7 @@ window.onload = function () {
             second: '2-digit'
         });
 
-        const formattedExitTime = exitTime.toLocaleString('zh-CN', {
+        const formattedExitTime = exitTime.toLocaleString('en-US', {
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
@@ -89,7 +89,8 @@ window.onload = function () {
             second: '2-digit'
         });
 
-        document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} `;
+        const noradId = satelliteTLE2 ? satelliteTLE2.split(' ')[1] : '';
+        document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} [${noradId}]`;
         document.getElementById('satellite-info').textContent = `📍AzNow: ° ElNow: ° 🔝MaxEl：${selectedPass.highestElevation}° `;
         document.getElementById('pass-info').textContent = `🔼Start: ${formattedEntryTime} | 🔽End: ${formattedExitTime} `;
         document.getElementById('time-info').textContent = "";
@@ -118,11 +119,9 @@ window.onload = function () {
 
             const elevationdg = satellite.radiansToDegrees(lookAngles.elevation).toFixed(2);
             const azimuthdg = satellite.radiansToDegrees(lookAngles.azimuth).toFixed(2);
-            const distance = satellite.eciToGeodetic(positionEci).height.toFixed(2);
-            const height = positionEci.z.toFixed(2);
 
-
-            document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} `;
+            const noradId = satelliteTLE2 ? satelliteTLE2.split(' ')[1] : '';
+            document.getElementById('satellite-name').textContent = `🛰${selectedPass.satelliteName} [${noradId}]`;
             document.getElementById('satellite-info').textContent = `📍AzNow: ${azimuthdg}° ElNow: ${elevationdg}° | 🔝MaxEl: ${selectedPass.highestElevation}° `;
             document.getElementById('pass-info').textContent = `🔼Start: ${formattedEntryTime} | 🔽End: ${formattedExitTime} `;
 
@@ -410,13 +409,15 @@ function updateProgressBar(entryTime, exitTime, now) {
 }
 
 function handler(e) {
-
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
+    let azimuth = compass;
 
     // Fix rotation past 45 degrees inclination on the iPhone
+    const abs_beta = Math.abs(e.beta);
     let rotation = -compass;
-    if (Math.abs(e.beta) >= 135) {
+    if (abs_beta >= 135) {
         rotation -= 180;
+        azimuth += 180;
     }
 
     // Rotate compass circle
@@ -431,9 +432,6 @@ function handler(e) {
     satorbitpointCanvas.style.transformOrigin = 'center';
     satorbitpointCanvas.style.transform = `rotate(${rotation}deg)`;
 
-    // Handle arrow position based on beta
-    const beta = e.beta;  // Get the beta value from the event
-
     // Elevation tracking
     // Control red point visibility based on compass angle
     const elevationBar = document.getElementById('elevation-bar');
@@ -441,26 +439,43 @@ function handler(e) {
 
     const barHeight = elevationBar.offsetHeight - 9;
 
-    const abs_beta = Math.abs(beta);
-    if (abs_beta > 180) {
-        adjustedBeta = 90;
-    } else if (abs_beta <= 90) {
-        adjustedBeta = 0;
-    } else {
-        adjustedBeta = abs_beta-90;
-    }
+    // Select handheld or mounted phone mode
+    const settings = JSON.parse(localStorage.getItem('settings')) ?? {};
+    const isPhoneMounted = settings?.phoneMounted || false;
 
+    if (isPhoneMounted) {
+        if (abs_beta > 90) {
+            adjustedBeta = 90;
+        } else if (abs_beta <= 0) {
+            adjustedBeta = 0;
+        } else {
+            adjustedBeta = abs_beta;
+        }
+    } else {
+        if (abs_beta > 180) {
+            adjustedBeta = 90;
+        } else if (abs_beta <= 90) {
+            adjustedBeta = 0;
+        } else {
+            adjustedBeta = abs_beta-90;
+        }
+    }
+    
     const elevationDistance = (90 - adjustedBeta) / 90 * barHeight;
 
     arrowElevation.style.top = `${elevationDistance - arrowElevation.offsetHeight / 2}px`;
+
+    const azimuthDisplay = document.getElementById('azimuth-degrees');
+    azimuthDisplay.innerHTML = `<p>Azimuth: ${azimuth.toFixed(2)}°</p>`;
+    const elevationDisplay = document.getElementById('elevation-degrees');
+    elevationDisplay.innerHTML = `<p>Elevation: ${adjustedBeta.toFixed(2)}°</p>`;
 }
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation', function (event) {
-
         alpha = event.alpha,
-            beta = event.beta,
-            gamma = event.gamma;
+        beta = event.beta,
+        gamma = event.gamma;
 
         // Update arrow and compass position
         handler(event);
