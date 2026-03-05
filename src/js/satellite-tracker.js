@@ -441,7 +441,8 @@ function handler(e) {
     const barHeight = elevationBar.offsetHeight - 9;
 
     // Select handheld or mounted phone mode
-    const isPhoneMounted = localStorage.getItem('phoneMounted') ?? false;
+    const settings = JSON.parse(localStorage.getItem('settings')) ?? {};
+    const isPhoneMounted = settings?.phoneMounted || false;
 
     if (isPhoneMounted) {
         if (abs_beta > 90) {

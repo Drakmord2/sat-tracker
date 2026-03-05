@@ -178,6 +178,16 @@ updateFavoriteButtonText()
 
 let satellites = [];
 
+function toggleSetting(setting_name) {
+    let settings = localStorage.getItem('settings') || '{}';
+    settings = JSON.parse(settings);
+    settings[setting_name] = !settings[setting_name];
+    localStorage.setItem('settings', JSON.stringify(settings));
+
+    document.getElementById('close-btn').click();
+    document.getElementById('app-settings').click();
+}
+
 window.addEventListener('load', function () {
     document.getElementById('addressinfo').textContent = translations[currentLang].locationDefault;
     localStorage.removeItem('selectedSatelliteName');
@@ -186,6 +196,43 @@ window.addEventListener('load', function () {
     localStorage.removeItem('selectedSatelliteTLE2');
     localStorage.removeItem('selectedorbit');
     localStorage.removeItem('freqinfo');
+
+    const appSettings =  document.getElementById('app-settings');
+    const popup = document.getElementById('settings-popup');
+    appSettings.onclick = () => {
+        const settingsInfo = document.getElementById('settings-info');
+
+        let content = `<h3>Settings</h3>`;
+
+        const settings_data = JSON.parse(this.localStorage.getItem('settings'));
+        const phoneMount = settings_data?.phoneMounted;
+
+        content += `
+            <p style="font-size: 12px; color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
+                Mounted phone: ${phoneMount}
+                <button onClick="toggleSetting('phoneMounted')">Toggle</button>
+            </p>
+        `;
+
+        // Display the content
+        settingsInfo.innerHTML = content;
+
+        // Show the popup
+        popup.style.display = 'block';
+    };
+
+    // Close the popup when the close button is clicked
+    const closeButton = document.getElementById('close-btn');
+    closeButton.addEventListener('click', function () {
+        popup.style.display = 'none';
+    });
+
+    // Close the popup if user clicks outside the popup content
+    window.addEventListener('click', function (event) {
+        if (event.target === popup) {
+            popup.style.display = 'none';
+        }
+    });
 
     // Get tleversion asynchronously
     gettleversion().then(tleversion => {

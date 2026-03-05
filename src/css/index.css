@@ -327,3 +327,42 @@ tbody td {
     margin-left: 5px;
     padding: 0;
 }
+
+/* Basic styling for the popup */
+#settings-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    z-index: 4;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#settings-popup .popup-content {
+    position: relative;
+    padding: 20px;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    background-color: #3d3d3d;
+    border-radius: 10px;
+}
+
+#close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+#satellite-feqinfo {
+    max-height: 400px;
+    overflow-y: auto;
+}
