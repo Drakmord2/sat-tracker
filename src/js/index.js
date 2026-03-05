@@ -49,11 +49,12 @@ function updatePlaceholder() {
 
 function showManualLocationPrompt(tleversion) {
     const notesDiv = document.getElementById('notesInfo');
-    const manualButton = document.createElement('button');
-    manualButton.textContent = 'Manual';
-    manualButton.className = 'manual-button';
+    const manualButton = document.getElementById('manual-location');
+
     manualButton.onclick = function () {
-        const grid = prompt('Enter 6-character Maidenhead grid (e.g: OM89av)');
+        const previous_grid = localStorage.getItem('maidenhead-grid') ?? '';
+        const grid = prompt('Enter 6-character Maidenhead grid (e.g: OM89av)', previous_grid);
+
         if (grid && /^[A-R]{2}[0-9]{2}[A-X]{2}$/i.test(grid)) {
             const latLon = gridToLatLon(grid.toUpperCase());
             if (latLon) {
@@ -64,6 +65,7 @@ function showManualLocationPrompt(tleversion) {
                 localStorage.setItem('latitude', latitude);
                 localStorage.setItem('longitude', longitude);
                 localStorage.setItem('altitude', 0);
+                localStorage.setItem('maidenhead-grid', grid);
 
                 const locationText = translations[currentLang].location
                     .replace('${latitude}', latitudefix)
@@ -78,8 +80,6 @@ function showManualLocationPrompt(tleversion) {
             alert('Invalid format, use 6 chars (e.g: OM89av)');
         }
     };
-    notesDiv.innerHTML = translations[currentLang].nolocation + ' ';
-    notesDiv.appendChild(manualButton);
 }
 
 function gridToLatLon(grid) {
@@ -351,7 +351,6 @@ function populateDropdown(satellites) {
                     starButton.textContent = '⚪';
                 }
 
-                const noradId = satellite.tle[1].split(' ')[1];
                 document.title = '🛰' + satellite.name;
                 localStorage.setItem('selectedSatelliteName', satellite.name);
                 localStorage.setItem('selectedSatelliteTLE1', satellite.tle[0]);

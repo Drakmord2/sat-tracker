@@ -410,7 +410,6 @@ function updateProgressBar(entryTime, exitTime, now) {
 }
 
 function handler(e) {
-
     const compass = e.webkitCompassHeading || Math.abs(e.alpha - 360);
     let azimuth = compass;
 
