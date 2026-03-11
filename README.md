@@ -22,6 +22,24 @@ openssl req -x509 -newkey rsa:2048 -nodes -sha256 -keyout localhost.key -out loc
 If using iOS, you need to send the localhost.crt to the phone, install it as a profile and allow trust as a root certificate.
 
 2. Start the HTTPS server (default port: `8987`)
+
+### Option A: Docker Compose
+
+Start (detached) using Docker Compose:
+```shell
+chmod +x ./start_server.sh
+./start_server.sh
+```
+
+If you need a different host port:
+```shell
+./start_server.sh 8990
+```
+
+This uses a non-root container user by mapping your host UID/GID (`HOST_UID`/`HOST_GID`) so the container can read `./cert/localhost.key` even if it is `0600` on the host.
+
+### Option B: Run locally with Python
+
 ```shell
 python3 server.py <optional port>;
 ```
