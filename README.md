@@ -10,7 +10,7 @@
 
 [User Manual](https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md)
 
-## Self Host
+## Self Hosting
 
 1. Create a local SSL cert
 ```shell
