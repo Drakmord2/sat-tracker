@@ -732,6 +732,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+var lastBeep = null;
+var beeps = 0;
+var beepTimer;
 // Function to start tracking Doppler frequency
 function startTrackingDoppler(downlink_low, uplink_low, description) {
 
@@ -742,8 +745,6 @@ function startTrackingDoppler(downlink_low, uplink_low, description) {
     if (window.dopplerInterval) {
         clearInterval(window.dopplerInterval);
     }
-
-
 
     // Set interval to update Doppler every second (1000ms)
     window.dopplerInterval = setInterval(() => {
@@ -889,6 +890,46 @@ function updateDoppler(downlink_low, uplink_low, description) {
 
     if (uplink_low) {
         dopplerInfo += `🔺${(uplink_low / 1000000).toFixed(3)} MHz ${directionup}${dopplerShiftDifferenceup} kHz<br>`;
+    }
+
+    function beep() {
+        var duration = 200;
+        var frequency = 400;
+        var volume = 1;
+        var type = 'sine'; 
+        var callback = null;
+
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        if (volume){gainNode.gain.value = volume;}
+        if (frequency){oscillator.frequency.value = frequency;}
+        if (type){oscillator.type = type;}
+        if (callback){oscillator.onended = callback;}
+        
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+    }
+
+    if (!isNaN(dopplerShiftDifferencedown) && now >= entryTime && now <= exitTime) {
+        const diff = parseInt(dopplerShiftDifferencedown);
+        if ([4, 5, 0, -5, -10].includes(diff) && diff != lastBeep) {
+            lastBeep = diff;
+            
+            beepTimer = setInterval(() => {
+                beep();
+                beeps += 1;
+            }, 1000)
+        }
+    }
+
+    if (beeps >= 3) {
+        clearInterval(beepTimer);
+        beeps = 0;
     }
 
     if (!isNaN(dopplerShiftDifferencedown) && now >= entryTime && now <= exitTime) {
