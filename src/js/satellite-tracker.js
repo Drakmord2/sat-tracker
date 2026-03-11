@@ -212,9 +212,8 @@ function drawTrajectorySVG(svgContainer, selectedPass, satrec, observerGd) {
     const trajectoryPoints = [];
     const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    const trajectoryColor = isDarkMode ? 'cyan' : '#007aff';
+    const trajectoryColor = '#007aff';
     const arrowColor = isDarkMode ? '#94ff00' : 'red';
-    const pointColor = isDarkMode ? 'yellow' : 'green';
 
     const centerX = 150;
     const centerY = 150;
@@ -356,7 +355,7 @@ function updateSatellitePositionsvg(trajectoryPoints) {
         satellitePoint.setAttribute('cx', closestPoint.x);
         satellitePoint.setAttribute('cy', closestPoint.y);
         satellitePoint.setAttribute('r', 5);
-        satellitePoint.setAttribute('fill', '#007aff');
+        satellitePoint.setAttribute('fill', '#ff001e');
         satellitePoint.setAttribute('stroke', 'black');
         satellitePoint.setAttribute('stroke-width', 2);
 
@@ -365,7 +364,7 @@ function updateSatellitePositionsvg(trajectoryPoints) {
         satelliteLine.setAttribute('y1', centerY);
         satelliteLine.setAttribute('x2', closestPoint.x);
         satelliteLine.setAttribute('y2', closestPoint.y);
-        satelliteLine.setAttribute('stroke', '#007aff');
+        satelliteLine.setAttribute('stroke', '#ff001e');
         satelliteLine.setAttribute('stroke-width', 1);
 
         trajectorySvg.appendChild(satelliteLine);
@@ -732,6 +731,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+var lastBeep = null;
+var beeps = 0;
+var beepTimer;
 // Function to start tracking Doppler frequency
 function startTrackingDoppler(downlink_low, uplink_low, description) {
 
@@ -742,8 +744,6 @@ function startTrackingDoppler(downlink_low, uplink_low, description) {
     if (window.dopplerInterval) {
         clearInterval(window.dopplerInterval);
     }
-
-
 
     // Set interval to update Doppler every second (1000ms)
     window.dopplerInterval = setInterval(() => {
@@ -889,6 +889,46 @@ function updateDoppler(downlink_low, uplink_low, description) {
 
     if (uplink_low) {
         dopplerInfo += `🔺${(uplink_low / 1000000).toFixed(3)} MHz ${directionup}${dopplerShiftDifferenceup} kHz<br>`;
+    }
+
+    function beep() {
+        var duration = 200;
+        var frequency = 400;
+        var volume = 1;
+        var type = 'sine'; 
+        var callback = null;
+
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        if (volume){gainNode.gain.value = volume;}
+        if (frequency){oscillator.frequency.value = frequency;}
+        if (type){oscillator.type = type;}
+        if (callback){oscillator.onended = callback;}
+        
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+    }
+
+    if (!isNaN(dopplerShiftDifferencedown) && now >= entryTime && now <= exitTime) {
+        const diff = parseInt(dopplerShiftDifferencedown);
+        if ([10, 5, 0, -5, -10].includes(diff) && diff != lastBeep) {
+            lastBeep = diff;
+            
+            beepTimer = setInterval(() => {
+                beep();
+                beeps += 1;
+            }, 1000)
+        }
+    }
+
+    if (beeps >= 3) {
+        clearInterval(beepTimer);
+        beeps = 0;
     }
 
     if (!isNaN(dopplerShiftDifferencedown) && now >= entryTime && now <= exitTime) {

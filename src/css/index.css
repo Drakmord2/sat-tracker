@@ -84,16 +84,12 @@ body {
     width: 100%;
     margin-bottom: 10px;
     font-size: 11px;
+    gap: 10px;
 }
-
 
 h1 {
     margin-bottom: 20px;
 }
-
-
-
-
 
 .lang-toggle {
     position: absolute;
@@ -325,6 +321,7 @@ tbody td {
     cursor: pointer;
     font-size: 11px;
     margin-left: 5px;
+    margin-bottom: 15px;
     padding: 0;
 }
 

@@ -3,7 +3,6 @@ const translations = {
     en: {
         location: "📍${latitude}, 🗺${longitude} ${locatormg} 📅TLE: ${gettleversion}",
         locationDefault: "❌Location: Not Retrieved",
-        timeFilterLabel: "19:00~23:59 Only",
         elevationThresholdLabel: "MAX. El ≥",
         daysLabel: "Days:",
         notesInfo: "ℹ️Click the El to view the orbit page<br>⏰Click the Date to add the event to calendar",
@@ -169,7 +168,6 @@ function updateContent(lang) {
         howToUseLink.href = translations[lang].howToUseUrl;
     }
 
-    document.getElementById('timeFilterLabel').textContent = translations[lang].timeFilterLabel;
     document.getElementById('daysLabel').textContent = translations[lang].daysLabel;
     document.getElementById('elevationThresholdLabel').textContent = translations[lang].elevationThresholdLabel;
 
@@ -459,8 +457,6 @@ document.getElementById('calculatePass').addEventListener('click', function () {
     const isNumeric = (str) => /[0-9.-]/.test(str);
     const match = isNumeric(confirmloc)
 
-    const timeFilterChecked = document.getElementById('timeFilter').checked;
-
     if (satelliteName && match) {
         const latitude = parseFloat(localStorage.getItem('latitude'));
         const longitude = parseFloat(localStorage.getItem('longitude'));
@@ -478,7 +474,7 @@ document.getElementById('calculatePass').addEventListener('click', function () {
         const satrec = satellite.twoline2satrec(satelliteinfo.tle[0], satelliteinfo.tle[1]);
 
         const currentTime = new Date();
-        const passes = calculatePasses(satrec, latitude, longitude, altitude, currentTime, timeFilterChecked);
+        const passes = calculatePasses(satrec, latitude, longitude, altitude, currentTime);
 
         const groupedPasses = groupPasses(passes);
         const savedSatelliteDataToLocalStorage = saveSatelliteDataToLocalStorage(groupedPasses, satelliteName)
@@ -494,8 +490,6 @@ document.getElementById('calculatePassfavorite').addEventListener('click', funct
     const confirmloc = localStorage.getItem('latitude');
     const isNumeric = (str) => /[0-9.-]/.test(str);
     const match = isNumeric(confirmloc)
-
-    const timeFilterChecked = document.getElementById('timeFilter').checked;
 
     const satellites = JSON.parse(localStorage.getItem('satellites'));
     const favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
@@ -521,7 +515,7 @@ document.getElementById('calculatePassfavorite').addEventListener('click', funct
             const satrec = satellite.twoline2satrec(satelliteinfo.tle[0], satelliteinfo.tle[1]);
 
             const currentTime = new Date();
-            const passesfavorite = calculatePassesfavorite(satrec, latitude, longitude, altitude, currentTime, timeFilterChecked);
+            const passesfavorite = calculatePassesfavorite(satrec, latitude, longitude, altitude, currentTime);
 
             const groupedPasses = groupPassesfavorite(passesfavorite);
 
@@ -538,7 +532,7 @@ document.getElementById('calculatePassfavorite').addEventListener('click', funct
     }
 });
 
-function calculatePasses(satrec, latitude, longitude, altitude, currentTime, filterNightTime) {
+function calculatePasses(satrec, latitude, longitude, altitude, currentTime) {
     localStorage.setItem('calculated', '1');
     const passes = [];
     const observerGd = {
@@ -571,13 +565,6 @@ function calculatePasses(satrec, latitude, longitude, altitude, currentTime, fil
                         azimuth: satellite.radiansToDegrees(lookAngles.azimuth),
                         elevation: elevationDegrees,
                     };
-
-                    if (filterNightTime) {
-                        const passHour = passTime.getHours();
-                        if (passHour < 19 || passHour >= 24) {
-                            continue;
-                        }
-                    }
 
                     passes.push(pass);
                 }
