@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    user: "${UID:-10001}:${GID:-10001}"
+    user: "${HOST_UID:-10001}:${HOST_GID:-10001}"
     ports:
       - "${SAT_TRACKER_PORT:-8987}:8987"
     volumes:
