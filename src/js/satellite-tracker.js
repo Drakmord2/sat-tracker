@@ -212,9 +212,8 @@ function drawTrajectorySVG(svgContainer, selectedPass, satrec, observerGd) {
     const trajectoryPoints = [];
     const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-    const trajectoryColor = isDarkMode ? 'cyan' : '#007aff';
+    const trajectoryColor = '#007aff';
     const arrowColor = isDarkMode ? '#94ff00' : 'red';
-    const pointColor = isDarkMode ? 'yellow' : 'green';
 
     const centerX = 150;
     const centerY = 150;
@@ -356,7 +355,7 @@ function updateSatellitePositionsvg(trajectoryPoints) {
         satellitePoint.setAttribute('cx', closestPoint.x);
         satellitePoint.setAttribute('cy', closestPoint.y);
         satellitePoint.setAttribute('r', 5);
-        satellitePoint.setAttribute('fill', '#007aff');
+        satellitePoint.setAttribute('fill', '#ff001e');
         satellitePoint.setAttribute('stroke', 'black');
         satellitePoint.setAttribute('stroke-width', 2);
 
@@ -365,7 +364,7 @@ function updateSatellitePositionsvg(trajectoryPoints) {
         satelliteLine.setAttribute('y1', centerY);
         satelliteLine.setAttribute('x2', closestPoint.x);
         satelliteLine.setAttribute('y2', closestPoint.y);
-        satelliteLine.setAttribute('stroke', '#007aff');
+        satelliteLine.setAttribute('stroke', '#ff001e');
         satelliteLine.setAttribute('stroke-width', 1);
 
         trajectorySvg.appendChild(satelliteLine);
@@ -917,7 +916,7 @@ function updateDoppler(downlink_low, uplink_low, description) {
 
     if (!isNaN(dopplerShiftDifferencedown) && now >= entryTime && now <= exitTime) {
         const diff = parseInt(dopplerShiftDifferencedown);
-        if ([4, 5, 0, -5, -10].includes(diff) && diff != lastBeep) {
+        if ([10, 5, 0, -5, -10].includes(diff) && diff != lastBeep) {
             lastBeep = diff;
             
             beepTimer = setInterval(() => {
