@@ -8,4 +8,4 @@ export HOST_UID="$(id -u)";
 export HOST_GID="$(id -g)";
 export SAT_TRACKER_PORT="$PORT";
 
-docker compose up -d --build;
+docker compose up -d;

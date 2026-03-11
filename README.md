@@ -36,6 +36,11 @@ If you need a different host port:
 ./start_server.sh 8990
 ```
 
+The server will be up until you manually stop it with:
+```shell
+./stop_server.sh
+```
+
 This uses a non-root container user by mapping your host UID/GID (`HOST_UID`/`HOST_GID`) so the container can read `./cert/localhost.key` even if it is `0600` on the host.
 
 ### Option B: Run locally with Python
