@@ -1,0 +1,12 @@
+services:
+  sat-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: "${UID:-10001}:${GID:-10001}"
+    ports:
+      - "${SAT_TRACKER_PORT:-8987}:8987"
+    volumes:
+      - ./cert:/app/cert:ro
+      - ./satellite_data:/app/satellite_data
+    restart: unless-stopped
