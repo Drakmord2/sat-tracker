@@ -440,9 +440,9 @@ function handler(e) {
 
     // Select handheld or mounted phone mode
     const settings = JSON.parse(localStorage.getItem('settings')) ?? {};
-    const isPhoneMounted = settings?.phoneMounted || false;
+    const isDeviceMounted = settings?.deviceMounted || false;
 
-    if (isPhoneMounted) {
+    if (isDeviceMounted) {
         if (abs_beta > 90) {
             adjustedBeta = 90;
         } else if (abs_beta <= 0) {
@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to fetch data from the local JSON file
     function fetchSatelliteData(noradCatId, selectedsat) {
         // Load the JSON data from the local file
-        fetch('/satellite_data/transmitters.json')
+        fetch('../satellite_data/transmitters.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to load transmitters.json');

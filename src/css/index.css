@@ -42,6 +42,11 @@ body {
     text-align: center;
     line-height: 1.5;
     color: #919191;
+
+    a {
+        font-weight: 600;
+        color: #919191;
+    }
 }
 
 #chatIframe {

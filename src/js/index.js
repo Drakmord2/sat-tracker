@@ -207,12 +207,16 @@ window.addEventListener('load', function () {
         let content = `<h3>Settings</h3>`;
 
         const settings_data = JSON.parse(this.localStorage.getItem('settings'));
-        const phoneMount = settings_data?.phoneMounted;
+        const deviceMounted = settings_data?.deviceMounted || false;
+
+        const orientation = deviceMounted ? 'Mounted' : 'Handheld';
 
         content += `
-            <p style="font-size: 12px; color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
-                Mounted phone: ${phoneMount}
-                <button onClick="toggleSetting('phoneMounted')">Toggle</button>
+            <p style="color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
+                Device Orientation: ${orientation}
+                <button onClick="toggleSetting('deviceMounted')" style="margin-left: 15px;">Toggle</button>
+                <br>
+                (Configures elevation tracking based on whether the device is handheld or mounted on the antenna)
             </p>
         `;
 
@@ -245,7 +249,7 @@ window.addEventListener('load', function () {
         document.getElementById('addressinfo').textContent = 'Error getting location';
     });
 
-    fetch('../../satellite_data/satonline.txt')
+    fetch('satellite_data/satonline.txt')
         .then(response => {
 
             if (!response.ok) {
@@ -300,7 +304,7 @@ function calculateMaidenhead(latitude, longitude, locationText) {
 
 function gettleversion() {
     return new Promise((resolve, reject) => {
-        fetch('../../satellite_data/satonline.txt')
+        fetch('satellite_data/satonline.txt')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error fetching LVE');
