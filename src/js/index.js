@@ -245,7 +245,7 @@ window.addEventListener('load', function () {
         document.getElementById('addressinfo').textContent = 'Error getting location';
     });
 
-    fetch('../../satellite_data/satonline.txt')
+    fetch('satellite_data/satonline.txt')
         .then(response => {
 
             if (!response.ok) {
@@ -300,7 +300,7 @@ function calculateMaidenhead(latitude, longitude, locationText) {
 
 function gettleversion() {
     return new Promise((resolve, reject) => {
-        fetch('../../satellite_data/satonline.txt')
+        fetch('satellite_data/satonline.txt')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error fetching LVE');
