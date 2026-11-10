@@ -209,10 +209,13 @@ window.addEventListener('load', function () {
         const settings_data = JSON.parse(this.localStorage.getItem('settings'));
         const deviceMounted = settings_data?.deviceMounted || false;
 
+        const orientation = deviceMounted ? 'Mounted' : 'Handheld';
+
         content += `
-            <p style="font-size: 12px; color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
-                Mounted device: ${deviceMounted}
-                <button onClick="toggleSetting('deviceMounted')">Toggle</button>
+            <p style="color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
+                Device Orientation: ${orientation}
+                <button onClick="toggleSetting('deviceMounted')" style="margin-left: 15px;">Toggle</button>
+                <br>
                 (Configures elevation tracking based on whether the device is handheld or mounted on the antenna)
             </p>
         `;
