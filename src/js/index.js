@@ -207,12 +207,13 @@ window.addEventListener('load', function () {
         let content = `<h3>Settings</h3>`;
 
         const settings_data = JSON.parse(this.localStorage.getItem('settings'));
-        const phoneMount = settings_data?.phoneMounted;
+        const deviceMounted = settings_data?.deviceMounted || false;
 
         content += `
             <p style="font-size: 12px; color: #ffffff; margin-top: 5px; margin-bottom: 15px;">
-                Mounted phone: ${phoneMount}
-                <button onClick="toggleSetting('phoneMounted')">Toggle</button>
+                Mounted device: ${deviceMounted}
+                <button onClick="toggleSetting('deviceMounted')">Toggle</button>
+                (Configures elevation tracking based on whether the device is handheld or mounted on the antenna)
             </p>
         `;
 

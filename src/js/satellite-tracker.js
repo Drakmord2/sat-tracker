@@ -440,9 +440,9 @@ function handler(e) {
 
     // Select handheld or mounted phone mode
     const settings = JSON.parse(localStorage.getItem('settings')) ?? {};
-    const isPhoneMounted = settings?.phoneMounted || false;
+    const isDeviceMounted = settings?.deviceMounted || false;
 
-    if (isPhoneMounted) {
+    if (isDeviceMounted) {
         if (abs_beta > 90) {
             adjustedBeta = 90;
         } else if (abs_beta <= 0) {

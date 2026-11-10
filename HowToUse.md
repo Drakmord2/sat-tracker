@@ -39,7 +39,7 @@
 
 ### 3. Real-time Satellite Tracking
 
-**This page displays the satellite's current elevation and azimuth angles, and uses your phone's sensors to assist in antenna alignment by indicating whether you're pointed at the satellite.
+**This page displays the satellite's current elevation and azimuth angles, and uses your dvice's sensors to assist in antenna alignment by indicating whether you're pointed at the satellite.
 Because sensors are used, the page will request sensor permissions. iOS users need to click the "iOS Device Sensor Authorization" button at the bottom of the page to enable access.**
 
 <img width="229" height="34" alt="image" src="https://github.com/user-attachments/assets/fc57dbef-ebde-475d-a2a2-50426ed41696" />
