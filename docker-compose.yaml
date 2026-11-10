@@ -8,5 +8,5 @@ services:
       - "${SAT_TRACKER_PORT:-8987}:8987"
     volumes:
       - ./cert:/app/cert:ro
-      - ./sat-tracker/satellite_data:/app/satellite_data
+      - ./satellite_data:/app/satellite_data
     restart: unless-stopped
