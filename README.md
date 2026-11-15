@@ -10,6 +10,10 @@
 
 [User Manual](https://github.com/Drakmord2/sat-tracker/blob/main/HowToUse.md)
 
+## Online Version
+
+Run the app at https://drakmord2.github.io/sat-tracker
+
 ## Self Hosting
 
 1. Create a local SSL cert
