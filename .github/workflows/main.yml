@@ -31,7 +31,7 @@ jobs:
 
       - name: Update ASRTU-1 name
         run: |
-          sed -i 's/ASRTU-1 (RS64S\/BJ2CR)/ASRTU-1 (RS64S\/BJ2CR\/AO-123)/g' ./satellite_data/satonline.txt;
+          sed -i 's/ASRTU-1 (RS64S\/BJ2CR)/ASRTU-1 (RS64S\/BJ2CR\/AO-123)/g' ./satellite_data/satonline.txt
 
       - name: Download transmitters.json
         run: |
