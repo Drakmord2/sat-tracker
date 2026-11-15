@@ -1,0 +1,46 @@
+name: TLE update
+
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Github token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Download new TLEs
+        run: |
+          curl -k -o ./satellite_data/satonline.txt https://www.amsat.org/tle/dailytle.txt
+
+     - name: Append WX TLEs
+       run: |
+         cat ./satellite_data/meteorsats.txt >> ./satellite_data/satonline.txt
+
+      - name: Update ASRTU-1 name
+        run: |
+          sed -i 's/ASRTU-1 (RS64S\/BJ2CR)/ASRTU-1 (RS64S\/BJ2CR\/AO-123)/g' ./satellite_data/satonline.txt
+
+      - name: Download transmitters.json
+        run: |
+          curl -o ./satellite_data/transmitters.json "https://db.satnogs.org/api/transmitters/?format=json&status=active"
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add ./satellite_data/satonline.txt ./satelitte_data/transmitters.json
+          git commit -m "Updated TLE files at $(date)"
+          git push
